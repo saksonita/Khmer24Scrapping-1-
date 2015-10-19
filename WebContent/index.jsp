@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<?xml version="1.0" encoding="UTF-8" ?>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    
 <!DOCTYPE>
 <%@ page import="org.jsoup.Jsoup" %>
 <%@ page import="org.jsoup.nodes.Document" %>
@@ -23,13 +23,7 @@
 	<h3>What do you want to search?</h3>
 	<div class="search_box">
 		<form id="search_text" method="get">
-			<input type="hidden" name="category" value="phone-accessories" />
-			<input type="hidden" name="ad_field" value="" />
-			<input type="hidden" name="ad_kindof" value=""/>
-			<input type="hidden" name="filter[ad_price][from]" value="" />
-			<input type="hidden" name="filter[ad_price][to]" value="" />
-			<input type="hidden" name="sortby" value="" />
-			<input type="hidden" name="location" value="0" />
+			
 			<input type="text" name="q" value="" placeholder="What are you looking for..." id="search_box" />
 			<span>
 			<select name="category" id="search_cate" class="form_control">
@@ -44,41 +38,44 @@
 			<input class="btn btn_yellow" type="submit" value="Search" />
 		</form>
 	</div>
-	 <%
+	<%
 		request.setCharacterEncoding("UTF-8");
 	 	int result = 0;
 		Elements linkTitle = null;
-		Elements image = null;
+		/* Elements image = null;
 		Elements title = null;
 		Elements price = null;
-		Elements list = null;
+		Elements list = null; */
 
 		
-		if(request.getParameter("p")!=null)
+		if(request.getParameter("q")!=null)
 		{
 			try{
 				String q = request.getParameter("q");
 				String category = request.getParameter("category");
 				String location = request.getParameter("location");
 				String searchType = request.getParameter("searchtype");
-				Document doc = Jsoup.connect("http://www.khmer24.com/search.html?location=&q="+q+"&category="+category+"&location="+location).get();
-				linkTitle = doc.select("p_relative paid_ad a");
-				image = doc.select(".middle img");
+				Document doc = null;
+				doc = Jsoup.connect("http://www.khmer24.com/search.html?location=&q="+q+"&category="+category+"&location="+location).userAgent("Mozilla").get();
+				linkTitle = doc.select("li.p_relative");
+				result=linkTitle.size();
+				/* image = doc.select(".middle img");
 				title = doc.select(".title h2");
 				price = doc.select(".price span");
-				list = doc.select(".optional div");
+				list = doc.select(".optional div"); */
+				System.out.print(linkTitle);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			if (result > 0) { %>
 				search result for <strong><%=request.getParameter("q") %></strong>
 				<% for(int i=0; i<result; i++){ %>
-						<ul class="gallery_ads"><%=linkTitle.get(i).text()%> </ul>
+						<ul class="list_ads"><%=linkTitle.get(i).html()%> </ul>
 				<% } %>
 		<% }else{ %>
 		<h3>No result found for <%= request.getParameter("q") %></h3>
-	<% }
-	}
+	<% 		}
+		}
 	%> 
 
 			<!-- <li class="p_relative paid_ad">
